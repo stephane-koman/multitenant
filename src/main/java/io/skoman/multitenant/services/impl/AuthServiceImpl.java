@@ -35,7 +35,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public User signup(RegisterUserDTO dto) throws InterruptedException, ExecutionException {
-
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<User> userFuture = executor.submit(() -> {
             TenantDTO tenantDTO = tenantService.addTenant(new TenantCreaDTO(dto.tenantName()));

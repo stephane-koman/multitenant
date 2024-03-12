@@ -12,6 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
+import static io.skoman.multitenant.constants.ISwaggerConstant.SWAGGER_API_DOCS;
+import static io.skoman.multitenant.constants.ISwaggerConstant.SWAGGER_UI;
 import static io.skoman.multitenant.constants.ITokenConstant.HEADER_TOKEN_NAME;
 import static io.skoman.multitenant.constants.ITokenConstant.HEADER_TOKEN_PREFIX;
 
@@ -23,11 +25,14 @@ public class RequestInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(
             HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull Object handler
+            HttpServletResponse response,
+            Object handler
     ) throws IOException {
         String requestURI = request.getRequestURI();
         String authHeader = request.getHeader(HEADER_TOKEN_NAME);
+
+        if(request.getServletPath().contains(SWAGGER_UI) || request.getServletPath().contains(SWAGGER_API_DOCS))
+            return true;
 
         if (authHeader == null || !authHeader.startsWith(HEADER_TOKEN_PREFIX)) {
             response.getWriter().write("JWT Token IS WRONG");
@@ -50,9 +55,9 @@ public class RequestInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull Object handler,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler,
             @Nullable ModelAndView modelAndView
     ) throws Exception {
         TenantContext.clear();

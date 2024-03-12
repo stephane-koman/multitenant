@@ -16,6 +16,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static io.skoman.multitenant.constants.ISwaggerConstant.SWAGGER_API_DOCS;
+import static io.skoman.multitenant.constants.ISwaggerConstant.SWAGGER_UI;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -30,7 +33,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authorizationManagerRequestMatcherRegistry ->
                                 authorizationManagerRequestMatcherRegistry
-                                        .requestMatchers("/auth/**")
+                                        .requestMatchers(
+                                                "/auth/**",
+                                                SWAGGER_UI + "/**",
+                                                SWAGGER_API_DOCS
+                                                )
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated()
