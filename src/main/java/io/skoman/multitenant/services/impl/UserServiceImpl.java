@@ -1,6 +1,6 @@
 package io.skoman.multitenant.services.impl;
 
-import io.skoman.multitenant.daos.UserDAO;
+import io.skoman.multitenant.daos.user.UserDAO;
 import io.skoman.multitenant.dtos.UserDTO;
 import io.skoman.multitenant.services.UserService;
 import lombok.RequiredArgsConstructor;

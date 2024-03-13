@@ -1,4 +1,4 @@
 package io.skoman.multitenant.dtos;
 
-public record UserCreaDTO(String fullName, String email, String password) {
+public record UserCreaDTO(String firstName, String lastName, String email, String password) {
 }

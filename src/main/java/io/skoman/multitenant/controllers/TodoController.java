@@ -1,6 +1,6 @@
 package io.skoman.multitenant.controllers;
 
-import io.skoman.multitenant.daos.UserDAO;
+import io.skoman.multitenant.daos.user.UserDAO;
 import io.skoman.multitenant.dtos.TodoCreaDTO;
 import io.skoman.multitenant.dtos.TodoDTO;
 import io.skoman.multitenant.services.TodoService;

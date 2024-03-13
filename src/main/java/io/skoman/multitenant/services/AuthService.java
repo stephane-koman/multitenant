@@ -2,7 +2,7 @@ package io.skoman.multitenant.services;
 
 import io.skoman.multitenant.dtos.LoginUserDTO;
 import io.skoman.multitenant.dtos.RegisterUserDTO;
-import io.skoman.multitenant.entities.User;
+import io.skoman.multitenant.entities.user.User;
 
 import java.util.concurrent.ExecutionException;
 

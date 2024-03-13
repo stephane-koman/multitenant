@@ -1,6 +1,6 @@
 package io.skoman.multitenant.utils;
 
-import io.skoman.multitenant.entities.User;
+import io.skoman.multitenant.entities.user.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

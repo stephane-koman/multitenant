@@ -3,18 +3,18 @@ package io.skoman.multitenant.security;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.skoman.multitenant.entities.user.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static io.skoman.multitenant.constants.ITenantConstant.TENANT_ID;
+import static io.skoman.multitenant.constants.IUserConstant.ROLES;
 
 @Service
 public class JwtService {
@@ -64,6 +64,11 @@ public class JwtService {
     public String extractTenant(String token){
         final Claims claims = extractAllClaims(token);
         return (String) claims.get(TENANT_ID);
+    }
+
+    public ArrayList<Map<Object, Object>> extractRoles(String token){
+        final Claims claims = extractAllClaims(token);
+        return (ArrayList<Map<Object, Object>>) claims.get(ROLES);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {

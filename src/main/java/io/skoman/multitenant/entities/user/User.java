@@ -1,4 +1,4 @@
-package io.skoman.multitenant.entities;
+package io.skoman.multitenant.entities.user;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -32,13 +32,19 @@ public class User implements UserDetails {
     private String tenant;
 
     @Column(nullable = false)
-    private String fullName;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     @Column(unique = true, length = 100, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
+
+    private boolean enabled;
+    private boolean tokenExpired;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -47,6 +53,15 @@ public class User implements UserDetails {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

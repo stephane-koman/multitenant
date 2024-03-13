@@ -1,10 +1,8 @@
 package io.skoman.multitenant.entities;
 
+import io.skoman.multitenant.entities.user.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.TenantId;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,8 +14,10 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@ToString
+@EqualsAndHashCode
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Todo {
 
     @Id

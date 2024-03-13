@@ -1,7 +1,8 @@
 package io.skoman.multitenant.controllers;
 
 import io.skoman.multitenant.dtos.*;
-import io.skoman.multitenant.entities.User;
+import io.skoman.multitenant.entities.user.Role;
+import io.skoman.multitenant.entities.user.User;
 import io.skoman.multitenant.mappers.UserMapper;
 import io.skoman.multitenant.security.JwtService;
 import io.skoman.multitenant.services.AuthService;
@@ -21,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 import static io.skoman.multitenant.constants.ITenantConstant.TENANT_ID;
 import static io.skoman.multitenant.constants.ITenantConstant.TENANT_NAME;
 import static io.skoman.multitenant.constants.IUserConstant.FULL_NAME;
+import static io.skoman.multitenant.constants.IUserConstant.ROLES;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +36,8 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<UserDTO> register(@RequestBody RegisterUserDTO registerUserDto) throws InterruptedException, ExecutionException {
         User registeredUser = authenticationService.signup(registerUserDto);
-        return ResponseEntity.ok(UserMapper.INSTANCE.userToUserDTO(registeredUser));
+        UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(registeredUser);
+        return ResponseEntity.ok(userDTO);
     }
 
     @PostMapping("/login")
@@ -45,7 +48,8 @@ public class AuthController {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put(TENANT_ID, tenant.id());
         extraClaims.put(TENANT_NAME, tenant.name());
-        extraClaims.put(FULL_NAME, authenticatedUser.getFullName());
+        extraClaims.put(FULL_NAME, authenticatedUser.getFirstName().concat(" ").concat(authenticatedUser.getLastName()));
+        extraClaims.put(ROLES, authenticatedUser.getRoles());
         String jwtToken = jwtService.generateToken(extraClaims, authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime());
