@@ -1,4 +1,4 @@
-package io.skoman.multitenant.config.security;
+package io.skoman.multitenant.security;
 
 import io.skoman.multitenant.daos.UserDAO;
 import lombok.RequiredArgsConstructor;

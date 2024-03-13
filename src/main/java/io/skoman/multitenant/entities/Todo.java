@@ -30,9 +30,9 @@ public class Todo {
     @Column(name = "tenant_id", nullable = false)
     private String tenant;
 
-    /*@ManyToOne
+    @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
-    private User user;*/
+    private User user;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

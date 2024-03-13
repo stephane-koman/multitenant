@@ -1,7 +1,6 @@
-package io.skoman.multitenant.config.security;
+package io.skoman.multitenant.security;
 
 import io.skoman.multitenant.config.TenantContext;
-import io.skoman.multitenant.services.jwt.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +37,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        if (request.getServletPath().contains("/api/v1/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader(HEADER_TOKEN_NAME);
 
         if (authHeader == null || !authHeader.startsWith(HEADER_TOKEN_PREFIX)) {

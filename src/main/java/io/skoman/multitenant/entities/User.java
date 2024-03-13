@@ -1,6 +1,5 @@
 package io.skoman.multitenant.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,10 +39,6 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
-
-    /*@JsonIgnore
-    @OneToMany(mappedBy="user")
-    private List<Todo> todos;*/
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

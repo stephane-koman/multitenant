@@ -21,14 +21,11 @@ spring:
     console:
       enabled: true
 
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql: trace
-    org.hibernate.type: trace
-
 security:
   jwt:
-    secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
-    # 1h in millisecond
-    expiration-time: 3600000
+    secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration-time: 86400000 # a day
+    refresh-token:
+      expiration: 604800000 # 7 days
+
+apiPrefix: /api

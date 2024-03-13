@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/tenants")
 @RequiredArgsConstructor
+@RequestMapping("${apiPrefix}/v1/tenants")
 public class TenantController {
 
     private final TenantService tenantService;
@@ -23,7 +23,7 @@ public class TenantController {
     }
 
     @GetMapping
-    public Page<TenantDTO> search(Pageable pageable){
-        return tenantService.search(pageable);
+    public ResponseEntity<Page<TenantDTO>> search(Pageable pageable){
+        return ResponseEntity.ok(tenantService.search(pageable));
     }
 }

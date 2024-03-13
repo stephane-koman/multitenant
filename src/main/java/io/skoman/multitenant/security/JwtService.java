@@ -1,4 +1,4 @@
-package io.skoman.multitenant.services.jwt;
+package io.skoman.multitenant.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

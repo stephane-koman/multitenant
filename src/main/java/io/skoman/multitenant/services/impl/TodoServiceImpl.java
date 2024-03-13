@@ -7,14 +7,14 @@ import io.skoman.multitenant.entities.Todo;
 import io.skoman.multitenant.mappers.TodoMapper;
 import io.skoman.multitenant.services.TodoService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.skoman.multitenant.utils.UserUtils.getCurrentUser;
+
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class TodoServiceImpl implements TodoService {
 
@@ -23,6 +23,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoDTO addTodo(TodoCreaDTO dto) {
         Todo todo = TodoMapper.INSTANCE.todoCreaDTOToTodo(dto);
+        todo.setUser(getCurrentUser());
         Todo todoSaved = todoDAO.save(todo);
         return TodoMapper.INSTANCE.todoToTodoDTO(todoSaved);
     }

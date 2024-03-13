@@ -11,6 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class TenantServiceImpl implements TenantService {
@@ -27,5 +30,15 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public Page<TenantDTO> search(Pageable pageable) {
         return tenantDAO.tenants(pageable);
+    }
+
+    @Override
+    public TenantDTO findByTenantId(UUID tenantId) {
+        Optional<Tenant> tenant = tenantDAO.findById(tenantId);
+
+        if(tenant.isEmpty())
+            throw new RuntimeException("Tenant not found");
+
+        return TenantMapper.INSTANCE.tenantToTenantDTO(tenant.get());
     }
 }
