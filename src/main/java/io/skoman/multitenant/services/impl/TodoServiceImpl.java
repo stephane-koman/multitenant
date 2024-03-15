@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static io.skoman.multitenant.utils.UserUtils.getCurrentUser;
+import static io.skoman.multitenant.utils.UserUtils.getCurrentUserId;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoDTO addTodo(TodoCreaDTO dto) {
         Todo todo = TodoMapper.INSTANCE.todoCreaDTOToTodo(dto);
-        todo.setUser(getCurrentUser());
+        todo.setUser(getCurrentUserId());
         Todo todoSaved = todoDAO.save(todo);
         return TodoMapper.INSTANCE.todoToTodoDTO(todoSaved);
     }

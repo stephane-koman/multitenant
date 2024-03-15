@@ -1,16 +1,18 @@
 package io.skoman.multitenant.controllers;
 
-import io.skoman.multitenant.daos.user.UserDAO;
 import io.skoman.multitenant.dtos.TodoCreaDTO;
 import io.skoman.multitenant.dtos.TodoDTO;
 import io.skoman.multitenant.services.TodoService;
-import io.skoman.multitenant.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,11 +20,9 @@ import org.springframework.web.bind.annotation.*;
 public class TodoController {
 
     private final TodoService todoService;
-    private final JwtService jwtService;
-    private final UserDAO userDAO;
 
     @PostMapping
-    public ResponseEntity<TodoDTO> addTodo(@RequestBody TodoCreaDTO dto){
+    public ResponseEntity<TodoDTO> addTodo(@RequestBody TodoCreaDTO dto, Principal principal){
         return new ResponseEntity<>(todoService.addTodo(dto), HttpStatus.CREATED);
     }
 

@@ -1,6 +1,5 @@
 package io.skoman.multitenant.entities;
 
-import io.skoman.multitenant.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,9 +29,8 @@ public class Todo {
     @Column(name = "tenant_id", nullable = false)
     private String tenant;
 
-    @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
-    private User user;
+    @Column(name="user_id", nullable=false)
+    private String user;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

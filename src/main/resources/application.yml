@@ -20,10 +20,28 @@ spring:
   h2:
     console.enabled: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: multitenant-app
+            authorization-grant-type: authorization_code
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/multitenant-realm
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/multitenant-realm
+          jwk-set-uri: http://localhost:8081/realms/multitenant-realm/protocol/openid-connect/certs
+
 logging:
   level:
     io.skoman: DEBUG
     org.springframework.web: DEBUG
+    org.springframework.security: trace
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
     org.hibernate.type: TRACE
