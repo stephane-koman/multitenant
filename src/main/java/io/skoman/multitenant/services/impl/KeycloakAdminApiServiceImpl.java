@@ -1,25 +1,34 @@
 package io.skoman.multitenant.services.impl;
 
 import io.skoman.multitenant.config.KeycloakAdminProperties;
+import io.skoman.multitenant.dtos.UserCreaDTO;
+import io.skoman.multitenant.dtos.UserDTO;
 import io.skoman.multitenant.dtos.UserSearchDTO;
+import io.skoman.multitenant.exceptions.UserException;
 import io.skoman.multitenant.mappers.UserMapper;
 import io.skoman.multitenant.services.KeycloakAdminApiService;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.RoleResource;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 import static io.skoman.multitenant.constants.ITokenConstant.DEFAULT_KEYCLOAK_ROLES;
+import static io.skoman.multitenant.constants.ITokenConstant.TENANT_CLAIM;
+import static io.skoman.multitenant.utils.UserUtil.getCurrentUserTenantId;
+import static io.skoman.multitenant.utils.UserUtil.getKeycloakUserId;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +70,50 @@ public class KeycloakAdminApiServiceImpl implements KeycloakAdminApiService {
     @Override
     public UserRepresentation getUser(String userId) {
         return getRealm().users().get(userId).toRepresentation();
+    }
+
+    @Override
+    public UserDTO createUser(UserCreaDTO userCreaDTO) {
+        if(!userCreaDTO.password().equals(userCreaDTO.passwordConfirm()))
+            throw new UserException("The two passwords don't matched");
+
+        List<UserRepresentation> userRepresentationList = searchUser(userCreaDTO.username());
+        verifyExistenceOfElement(userRepresentationList, "This username already in used");
+
+        userRepresentationList = searchUser(userCreaDTO.email());
+        verifyExistenceOfElement(userRepresentationList, "This email already in used");
+
+        UserRepresentation userToCreate = UserMapper.INSTANCE.userCreateDTOToUserRepresentation(userCreaDTO);
+
+        userToCreate.setEnabled(true);
+        userToCreate.setEmailVerified(true);
+
+        String tenantId = getCurrentUserTenantId();
+
+        userToCreate.setAttributes(Map.of(TENANT_CLAIM, List.of(String.valueOf(tenantId))));
+
+        CredentialRepresentation passwordCred = new CredentialRepresentation();
+        passwordCred.setValue(userCreaDTO.password());
+        passwordCred.setType(CredentialRepresentation.PASSWORD);
+        passwordCred.setTemporary(false);
+
+        userToCreate.setCredentials(List.of(passwordCred));
+
+        Response response = getRealm().users().create(userToCreate);
+
+        if(response.getStatus() != HttpStatus.CREATED.value())
+            throw new RuntimeException("An error occurred during user creation");
+
+        String userId = getKeycloakUserId(response);
+
+        addRolesToUser(userId, userCreaDTO.roles());
+
+        return new UserDTO(getKeycloakUserId(response), tenantId, userCreaDTO.firstName() + " " + userCreaDTO.lastName(), userCreaDTO.email(), userCreaDTO.roles());
+    }
+
+    private static void verifyExistenceOfElement(List<UserRepresentation> userRepresentationList, String message) {
+        if(!userRepresentationList.isEmpty())
+            throw new UserException(message);
     }
 
     @Override
@@ -133,6 +186,12 @@ public class KeycloakAdminApiServiceImpl implements KeycloakAdminApiService {
     }
 
     @Override
+    public void addRolesToUser(String userId, List<String> roleNameList) {
+        if(!roleNameList.isEmpty()){
+            roleNameList.forEach(roleName -> addRoleToUser(userId, roleName));
+        }
+    }
+
     public void addRoleToUser(String userId, String roleName) {
         RoleResource roleResource = getRealm().roles().get(roleName);
         List<RoleRepresentation> roleToAdd = new LinkedList<>();

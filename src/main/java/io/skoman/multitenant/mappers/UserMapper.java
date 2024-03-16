@@ -1,5 +1,6 @@
 package io.skoman.multitenant.mappers;
 
+import io.skoman.multitenant.dtos.UserCreaDTO;
 import io.skoman.multitenant.dtos.UserDTO;
 import io.skoman.multitenant.dtos.UserSearchDTO;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -18,5 +19,7 @@ public interface UserMapper {
     UserDTO userRepresentationToUserDTO(UserRepresentation userRepresentation);
 
     UserSearchDTO userRepresentationToUserSearchDTO(UserRepresentation userRepresentation);
+
+    UserRepresentation userCreateDTOToUserRepresentation(UserCreaDTO userCreaDTO);
 
 }
