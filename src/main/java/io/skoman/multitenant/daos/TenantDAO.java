@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -15,4 +16,6 @@ public interface TenantDAO extends JpaRepository<Tenant, UUID> {
 
     @Query("select new io.skoman.multitenant.dtos.TenantDTO(t.id, t.name) from Tenant t")
     Page<TenantDTO> tenants(Pageable pageable);
+
+    Optional<Tenant> findByName(String name);
 }

@@ -22,6 +22,7 @@ public class Tenant {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @CreationTimestamp

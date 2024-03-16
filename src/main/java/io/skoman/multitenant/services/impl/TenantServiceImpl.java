@@ -22,6 +22,10 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public TenantDTO addTenant(TenantCreaDTO dto) {
+        Optional<Tenant> tenantOp = tenantDAO.findByName(dto.name());
+        if(tenantOp.isPresent())
+            throw new RuntimeException("This company name already exists");
+
         Tenant tenant = TenantMapper.INSTANCE.tenantCreaDTOToTenant(dto);
         Tenant tenantSaved = tenantDAO.save(tenant);
         return TenantMapper.INSTANCE.tenantToTenantDTO(tenantSaved);

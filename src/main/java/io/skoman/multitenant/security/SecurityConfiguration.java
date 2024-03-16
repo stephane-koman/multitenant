@@ -15,6 +15,8 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -39,6 +41,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 public class SecurityConfiguration {
 
     private final KeycloakLogoutHandler keycloakLogoutHandler;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
     public SessionRegistry sessionRegistry() {
@@ -87,7 +90,8 @@ public class SecurityConfiguration {
                 .jwt(jwt ->
                         jwt.jwtAuthenticationConverter(customJwtAuthenticationConverter())));
         http.oauth2Login(Customizer.withDefaults())
-                .logout(logout -> logout.addLogoutHandler(keycloakLogoutHandler).logoutSuccessUrl("/api"));
+                .logout(logout -> logout.addLogoutHandler(keycloakLogoutHandler).logoutSuccessUrl("/"));
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
 
