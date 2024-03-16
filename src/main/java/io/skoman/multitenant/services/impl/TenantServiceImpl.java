@@ -41,7 +41,7 @@ public class TenantServiceImpl implements TenantService {
         Optional<Tenant> tenant = tenantDAO.findById(tenantId);
 
         if(tenant.isEmpty())
-            throw new RuntimeException("Tenant not found");
+            throw new RuntimeException("Company associated to this user not found");
 
         return TenantMapper.INSTANCE.tenantToTenantDTO(tenant.get());
     }

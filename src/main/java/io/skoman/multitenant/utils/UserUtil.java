@@ -24,10 +24,10 @@ public class UserUtil {
         String email = (String) getClaim(jwt.getClaims(), EMAIL_CLAIM, "");
         String tenant = (String) getClaim(jwt.getClaims(), TENANT_CLAIM, "");
 
-        if (jwt.hasClaim(RESOURCE_ACCESS_CLAIM)) {
-            Map<String, Object> resourceAccess = jwt.getClaimAsMap(RESOURCE_ACCESS_CLAIM);
-            Map<String, Object> multitenantApp = (Map<String, Object>) resourceAccess.getOrDefault(MULTITENANT_APP_CLAIM, Map.of());
-            var roles = (Collection<String>) multitenantApp.getOrDefault(ROLES_CLAIM, List.of());
+        if (jwt.hasClaim(REALM_ACCESS_CLAIM)) {
+            Map<String, Object> resourceAccess = jwt.getClaimAsMap(REALM_ACCESS_CLAIM);
+            Collection<String> roles = (Collection<String>) resourceAccess.getOrDefault(ROLES_CLAIM, List.of());
+            roles = roles.stream().filter(role -> !DEFAULT_KEYCLOAK_ROLES.contains(role)).toList();
             mappedAuthorities.addAll(roles);
         }
 
@@ -46,7 +46,7 @@ public class UserUtil {
 
     public static String getCurrentUserId() {
         final Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return (String) jwt.getClaims().getOrDefault("userId", null);
+        return (String) jwt.getClaims().getOrDefault("user_id", null);
     }
 
     public static String getCurrentUserTenantId() {

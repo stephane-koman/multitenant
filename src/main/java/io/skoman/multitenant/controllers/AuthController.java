@@ -37,15 +37,9 @@ public class AuthController {
     @Autowired
     TenantService tenantService;
 
-    @GetMapping("/logout")
-    public void logout(HttpServletRequest request) throws Exception {
-        request.logout();
-    }
-
     @PostMapping("/signup")
     @Transactional
     public ResponseEntity<String> signup(@RequestBody LoginUserDTO userDTO){
-
         RealmResource realmResource = keycloak.realm(realm);
         UsersResource userResource = realmResource.users();
         UserRepresentation userRepresentation = getUserRepresentation(userDTO);

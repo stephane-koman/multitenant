@@ -15,7 +15,6 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -29,7 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static io.skoman.multitenant.constants.ITokenConstant.*;
+import static io.skoman.multitenant.constants.ITokenConstant.REALM_ACCESS_CLAIM;
+import static io.skoman.multitenant.constants.ITokenConstant.ROLES_CLAIM;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
@@ -134,9 +134,8 @@ public class SecurityConfiguration {
 
         @Override
         public Collection<GrantedAuthority> convert(Jwt jwt) {
-            Map<String, Object> resourceAccess = jwt.getClaimAsMap(RESOURCE_ACCESS_CLAIM);
-            Map<String, Object> multitenantApp = (Map<String, Object>) resourceAccess.getOrDefault(MULTITENANT_APP_CLAIM, Map.of());
-            Collection<String> roles = (Collection<String>) multitenantApp.getOrDefault(ROLES_CLAIM, List.of());
+            Map<String, Object> resourceAccess = jwt.getClaimAsMap(REALM_ACCESS_CLAIM);
+            Collection<String> roles = (Collection<String>) resourceAccess.getOrDefault(ROLES_CLAIM, List.of());
 
             return roles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
