@@ -1,8 +1,6 @@
 package io.skoman.multitenant.services;
 
-import io.skoman.multitenant.dtos.UserCreaDTO;
-import io.skoman.multitenant.dtos.UserDTO;
-import io.skoman.multitenant.dtos.UserSearchDTO;
+import io.skoman.multitenant.dtos.*;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -13,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface KeycloakAdminApiService {
+    UserDTO signup(SignupUserDTO userDTO);
+    LoginResponseDTO login(LoginUserDTO userDTO);
+    LoginResponseDTO refreshToken(RefreshTokenDTO refreshTokenDTO);
     List<UserRepresentation> getUsers();
     List<UserRepresentation> searchUser(String search);
     Page<UserSearchDTO> searchUsers(String search, Pageable pageable);

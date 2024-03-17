@@ -1,5 +1,6 @@
 package io.skoman.multitenant.mappers;
 
+import io.skoman.multitenant.dtos.SignupUserDTO;
 import io.skoman.multitenant.dtos.UserCreaDTO;
 import io.skoman.multitenant.dtos.UserDTO;
 import io.skoman.multitenant.dtos.UserSearchDTO;
@@ -21,5 +22,8 @@ public interface UserMapper {
     UserSearchDTO userRepresentationToUserSearchDTO(UserRepresentation userRepresentation);
 
     UserRepresentation userCreateDTOToUserRepresentation(UserCreaDTO userCreaDTO);
+
+
+    UserRepresentation userSignupUserDTOToUserRepresentation(SignupUserDTO userDTO);
 
 }
