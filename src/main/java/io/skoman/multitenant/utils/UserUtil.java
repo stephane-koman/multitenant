@@ -2,9 +2,7 @@ package io.skoman.multitenant.utils;
 
 import io.skoman.multitenant.dtos.UserDTO;
 import jakarta.ws.rs.core.Response;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.RoleScopeResource;
-import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.OAuth2Constants;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -21,7 +19,7 @@ public class UserUtil {
         final Jwt jwt = (Jwt) auth.getPrincipal();
 
         String fullName = (String) getClaim(jwt.getClaims(), NAME_CLAIM, "");
-        String email = (String) getClaim(jwt.getClaims(), EMAIL_CLAIM, "");
+        String email = (String) getClaim(jwt.getClaims(), OAuth2Constants.SCOPE_EMAIL, "");
         String tenant = (String) getClaim(jwt.getClaims(), TENANT_CLAIM, "");
 
         if (jwt.hasClaim(REALM_ACCESS_CLAIM)) {
@@ -46,7 +44,7 @@ public class UserUtil {
 
     public static String getCurrentUserId() {
         final Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return (String) jwt.getClaims().getOrDefault("user_id", null);
+        return (String) jwt.getClaims().getOrDefault(USER_ID, null);
     }
 
     public static String getCurrentUserTenantId() {
@@ -56,15 +54,5 @@ public class UserUtil {
 
     public static String getKeycloakUserId(Response response) {
         return response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
-    }
-
-    public static void addDefaultRolesToUser(RealmResource realmResource, String userId) {
-        RoleRepresentation adminRole =
-                realmResource.roles().get("ADMIN").toRepresentation();
-        RoleRepresentation userRole =
-                realmResource.roles().get("USER").toRepresentation();
-
-        RoleScopeResource roleMappingResource = realmResource.users().get(userId).roles().realmLevel();
-        roleMappingResource.add(List.of(adminRole, userRole));
     }
 }

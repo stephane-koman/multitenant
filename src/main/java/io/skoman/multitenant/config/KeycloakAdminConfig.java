@@ -15,7 +15,6 @@ public class KeycloakAdminConfig {
 
     @Bean
     Keycloak keycloak() {
-
         return KeycloakBuilder.builder()
                 .serverUrl(kcaProperties.serverUrl())
                 .realm(kcaProperties.realm())

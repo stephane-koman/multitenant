@@ -8,11 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +18,7 @@ public class TodoController {
     private final TodoService todoService;
 
     @PostMapping
-    public ResponseEntity<TodoDTO> addTodo(@RequestBody TodoCreaDTO dto, Principal principal){
+    public ResponseEntity<TodoDTO> addTodo(@RequestBody TodoCreaDTO dto){
         return new ResponseEntity<>(todoService.addTodo(dto), HttpStatus.CREATED);
     }
 
